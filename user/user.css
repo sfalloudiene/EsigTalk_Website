@@ -78,3 +78,25 @@ body {
     font-weight: bold;
     font-size: 0.9em;
 }
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    min-height: 100vh;
+    border-right: 1px solid #ddd;
+}
+
+.sidebar h4 {
+    font-weight: bold;
+}
+
+.sidebar .nav-link {
+    color: #445be1;
+    font-weight: bold;
+}
+
+.sidebar .nav-link.active {
+    color: white;
+    background-color: #445be1;
+    border-radius: 5px;
+}
+

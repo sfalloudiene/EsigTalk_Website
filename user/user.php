@@ -13,13 +13,13 @@
             <h4 class="text-primary">Menu</h4>
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link active" href="#messages-recus">Messages Reçus</a>
+                    <a class="nav-link active" href="#" onclick="afficherSection('messages-recus', this)">Messages Reçus</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#messages-envoyes">Messages Envoyés</a>
+                    <a class="nav-link" href="#" onclick="afficherSection('messages-envoyes', this)">Messages Envoyés</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#messages-non-lus">Messages Non Lus</a>
+                    <a class="nav-link" href="#" onclick="afficherSection('messages-non-lus', this)">Messages Non Lus</a>
                 </li>
             </ul>
             <hr>
@@ -45,11 +45,10 @@
                         <a href="supprimer.php?message_id=1" class="btn btn-danger btn-sm">Supprimer</a>
                     </div>
                 </div>
-                <!-- Ajoutez plus de messages ici -->
             </section>
 
             <!-- Section des Messages Envoyés -->
-            <section id="messages-envoyes" class="mt-4">
+            <section id="messages-envoyes" style="display: none;">
                 <h2>Vos Messages Envoyés</h2>
                 <div class="message">
                     <h3>Titre du message envoyé</h3>
@@ -59,10 +58,41 @@
                     <p>Contenu du message: Voici le contenu du message que vous avez envoyé.</p>
                     <p><strong>Pièce jointe:</strong> <a href="document_envoye.pdf" target="_blank">document_envoye.pdf</a></p>
                 </div>
-                <!-- Ajoutez plus de messages envoyés ici -->
+            </section>
+
+            <!-- Section des Messages Non Lus -->
+            <section id="messages-non-lus" style="display: none;">
+                <h2>Vos Messages Non Lus</h2>
+                <div class="message non-lu">
+                    <h3>Titre du message non lu</h3>
+                    <p><strong>Expéditeur:</strong> Tuteur Entreprise</p>
+                    <p><strong>Date:</strong> 29/10/2024</p>
+                    <p><strong>Catégorie:</strong> Info</p>
+                    <p>Contenu du message: Voici un message qui n'a pas encore été lu.</p>
+                </div>
             </section>
         </div>
     </div>
+
+    <script>
+        function afficherSection(sectionId, element) {
+            // Masquer toutes les sections
+            document.querySelectorAll('.content section').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // Afficher la section sélectionnée
+            document.getElementById(sectionId).style.display = 'block';
+            
+            // Retirer la classe active de tous les liens
+            document.querySelectorAll('.sidebar .nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Ajouter la classe active au lien cliqué
+            element.classList.add('active');
+        }
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
