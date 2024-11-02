@@ -2,10 +2,12 @@
   $titre = "Inscription";
 
   include('header.inc.php');
-  include('menu.inc.php');
 ?>
-
-  <h1>Création d'un compte</h1>
+<head>
+<link rel="stylesheet" href="connexion.css">
+</head>
+<div class="container-centered">
+<h1>Création d'un compte</h1>
   <form  method="POST" action="tt_inscription.php">
     <div class="container">
     <!-- Nom et prénom sur une ou deux lignes (en fonction de la taille) -->
@@ -37,6 +39,7 @@
         </div>
     </div>
 </form>
+</div>
  
 <?php
   include('footer.inc.php');

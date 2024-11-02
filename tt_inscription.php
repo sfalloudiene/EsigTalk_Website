@@ -48,5 +48,4 @@
   // Redirection vers la page d'accueil par exemple :
   header('Location: index.php');
 
-
 ?>
