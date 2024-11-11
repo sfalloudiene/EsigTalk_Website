@@ -22,7 +22,7 @@ session_start();
   <section class="hero">
   <div class="hero-content">
     <div class="hero-text">
-      <h1>Bienvenue dans EsigTalk. La plateforme qui facilite les échanges en tuteurs et apprentis.</h1>
+      <h1>Bienvenue dans EsigTalk. La plateforme qui facilite les échanges entre tuteurs et apprentis.</h1>
       <p>Connectez-vous, partagez des informations et suivez vos messages.</p>
       <div class="action-buttons">
         <a href="connexion.php" class="btn btn-large">Connexion</a>
@@ -52,7 +52,7 @@ session_start();
   <footer>
     <p>&copy; 2024 ESIGELEC. Tous droits réservés.</p>
     <nav>
-      <a href="./admin/admin.php">Mentions légales</a> | 
+      <a href="admin1.php">Mentions légales</a> | 
       <a href="./user/user.php">Politique de confidentialité</a> |
       <a href="#">Contact</a>
     </nav>
