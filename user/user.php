@@ -13,13 +13,25 @@
             <h4 class="text-primary">Menu</h4>
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link active" href="#" onclick="afficherSection('messages-recus', this)">Messages Reçus</a>
+                    <a class="nav-link active" href="#" onclick="afficherSection('accueil', this)">Accueil</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" onclick="afficherSection('messages-envoyes', this)">Messages Envoyés</a>
+                    <a class="nav-link" href="#" onclick="afficherSection('boite-reception', this)">Boîte de réception</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" onclick="afficherSection('messages-non-lus', this)">Messages Non Lus</a>
+                    <a class="nav-link" href="#" onclick="afficherSection('nouveau-message', this)">Nouveau message</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="afficherSection('messages-favoris', this)">Messages favoris</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="afficherSection('messages-envoyes', this)">Messages envoyés</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="afficherSection('profil', this)">
+                        <img src="user-icon.png" alt="User Icon" style="width: 20px; height: 20px; margin-right: 8px;">
+                        Profil
+                    </a>
                 </li>
             </ul>
             <hr>
@@ -28,48 +40,40 @@
 
         <!-- Contenu Principal -->
         <div class="content p-4">
-            <h1>Bienvenue, [Nom de l'utilisateur]</h1>
-
-            <!-- Section des Messages Reçus -->
-            <section id="messages-recus">
-                <h2>Vos Messages Reçus</h2>
-                <div class="message non-lu">
-                    <h3>Titre du message (Non lu)</h3>
-                    <p><strong>Expéditeur:</strong> Tuteur Ecole</p>
-                    <p><strong>Date:</strong> 01/11/2024</p>
-                    <p><strong>Catégorie:</strong> Suivi</p>
-                    <p>Contenu du message: Voici un message qui n'a pas encore été lu.</p>
-                    <p><strong>Pièce jointe:</strong> <a href="document.pdf" target="_blank">document.pdf</a></p>
-                    <div class="message-actions">
-                        <a href="repondre.php?message_id=1" class="btn btn-primary btn-sm">Répondre</a>
-                        <a href="supprimer.php?message_id=1" class="btn btn-danger btn-sm">Supprimer</a>
-                    </div>
-                </div>
+            <!-- Accueil -->
+            <section id="accueil">
+                <h2>Accueil</h2>
+                <p>Bienvenue dans votre espace personnel.</p>
             </section>
 
-            <!-- Section des Messages Envoyés -->
+            <!-- Boîte de réception -->
+            <section id="boite-reception" style="display: none;">
+                <h2>Boîte de réception</h2>
+                <p>Voici tous vos messages reçus.</p>
+            </section>
+
+            <!-- Nouveau message -->
+            <section id="nouveau-message" style="display: none;">
+                <h2>Nouveau message</h2>
+                <p>Rédigez un nouveau message ici.</p>
+            </section>
+
+            <!-- Messages favoris -->
+            <section id="messages-favoris" style="display: none;">
+                <h2>Messages favoris</h2>
+                <p>Liste de vos messages favoris.</p>
+            </section>
+
+            <!-- Messages envoyés -->
             <section id="messages-envoyes" style="display: none;">
-                <h2>Vos Messages Envoyés</h2>
-                <div class="message">
-                    <h3>Titre du message envoyé</h3>
-                    <p><strong>Destinataire:</strong> Tuteur Entreprise</p>
-                    <p><strong>Date:</strong> 27/10/2024</p>
-                    <p><strong>Catégorie:</strong> Info</p>
-                    <p>Contenu du message: Voici le contenu du message que vous avez envoyé.</p>
-                    <p><strong>Pièce jointe:</strong> <a href="document_envoye.pdf" target="_blank">document_envoye.pdf</a></p>
-                </div>
+                <h2>Messages envoyés</h2>
+                <p>Voici tous les messages que vous avez envoyés.</p>
             </section>
 
-            <!-- Section des Messages Non Lus -->
-            <section id="messages-non-lus" style="display: none;">
-                <h2>Vos Messages Non Lus</h2>
-                <div class="message non-lu">
-                    <h3>Titre du message non lu</h3>
-                    <p><strong>Expéditeur:</strong> Tuteur Entreprise</p>
-                    <p><strong>Date:</strong> 29/10/2024</p>
-                    <p><strong>Catégorie:</strong> Info</p>
-                    <p>Contenu du message: Voici un message qui n'a pas encore été lu.</p>
-                </div>
+            <!-- Profil -->
+            <section id="profil" style="display: none;">
+                <h2>Profil</h2>
+                <p>Informations de votre profil.</p>
             </section>
         </div>
     </div>
