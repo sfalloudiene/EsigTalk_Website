@@ -1,4 +1,4 @@
-<?php
+<?php 
 session_start();
 require_once("param.inc.php");
 
@@ -20,7 +20,7 @@ if (!$result) {
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Gestion des utilisateurs - Attribution de rôles</title>
+    <title>Gestion des utilisateurs - Attribution de rôles et création d'équipes</title>
     <link rel="stylesheet" href="admin1.css">
 </head>
 <body>
@@ -65,6 +65,52 @@ if (!$result) {
     }
     ?>
 
+    <!-- Section de création d'équipe -->
+    <hr>
+    <h2>Création des Équipes</h2>
+    <form method="POST" action="tt_creation_equipe.php">
+        <div class="container">
+            <label for="apprenti_select" class="form-label">Sélectionner un apprenti :</label>
+            <select id="apprenti_select" name="apprenti_id" class="form-control" required>
+                <option value="">-- Choisir un apprenti --</option>
+                <?php
+                // Récupérer les apprentis (role = 1)
+                $apprenti_result = $mysqli->query("SELECT id, nom, prenom FROM user WHERE role = 1");
+                while ($apprenti = $apprenti_result->fetch_assoc()) {
+                    echo "<option value='{$apprenti['id']}'>{$apprenti['nom']} {$apprenti['prenom']}</option>";
+                }
+                ?>
+            </select>
+
+            <label for="tuteur_ecole_select" class="form-label mt-3">Sélectionner un tuteur école :</label>
+            <select id="tuteur_ecole_select" name="tuteur_ecole_id" class="form-control">
+                <option value="">-- Choisir un tuteur école --</option>
+                <?php
+                // Récupérer les tuteurs école (role = 3)
+                $tuteur_ecole_result = $mysqli->query("SELECT id, nom, prenom FROM user WHERE role = 3");
+                while ($tuteur_ecole = $tuteur_ecole_result->fetch_assoc()) {
+                    echo "<option value='{$tuteur_ecole['id']}'>{$tuteur_ecole['nom']} {$tuteur_ecole['prenom']}</option>";
+                }
+                ?>
+            </select>
+
+            <label for="tuteur_entreprise_select" class="form-label mt-3">Sélectionner un tuteur entreprise :</label>
+            <select id="tuteur_entreprise_select" name="tuteur_entreprise_id" class="form-control">
+                <option value="">-- Choisir un tuteur entreprise --</option>
+                <?php
+                // Récupérer les tuteurs entreprise (role = 2)
+                $tuteur_entreprise_result = $mysqli->query("SELECT id, nom, prenom FROM user WHERE role = 2");
+                while ($tuteur_entreprise = $tuteur_entreprise_result->fetch_assoc()) {
+                    echo "<option value='{$tuteur_entreprise['id']}'>{$tuteur_entreprise['nom']} {$tuteur_entreprise['prenom']}</option>";
+                }
+                ?>
+            </select>
+
+            <div class="d-grid d-md-block my-3">
+                <button type="submit" class="btn btn-outline-primary">Créer l'équipe</button>
+            </div>
+        </div>
+    </form>
 </div>
 
 </body>
@@ -73,3 +119,4 @@ if (!$result) {
 <?php
 $mysqli->close(); // Ferme la connexion à la base de données
 ?>
+
