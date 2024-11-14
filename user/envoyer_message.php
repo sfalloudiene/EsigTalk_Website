@@ -12,18 +12,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Gestion de la pièce jointe
     if (isset($_FILES['document']) && $_FILES['document']['error'] === 0) {
         $nom_fichier = basename($_FILES['document']['name']);
-        $chemin_fichier = "uploads/" . $nom_fichier;
+        $chemin_fichier = "uploads/" . uniqid() . "_" . $nom_fichier;
+
+        // Vérifier si le dossier "uploads" existe, sinon le créer
         if (!file_exists("uploads")) {
-            mkdir("uploads", 0777, true);
+            mkdir("uploads", 0755, true); // Crée le dossier avec les permissions nécessaires
         }
+
+        // Déplacer le fichier téléchargé dans le dossier "uploads"
         if (move_uploaded_file($_FILES['document']['tmp_name'], $chemin_fichier)) {
-            $piece_jointe = $chemin_fichier;
+            $piece_jointe = $chemin_fichier; // Enregistrer le chemin du fichier joint dans la base de données
         }
     }
 
-    // Parcourir les destinataires sélectionnés
+    // Parcourir les destinataires sélectionnés et insérer le message
     foreach ($_POST['destinataires'] as $destinataire_email) {
-        // Récupérer l'ID du destinataire par e-mail
         $stmt = $conn->prepare("SELECT id FROM user WHERE email = ?");
         $stmt->bind_param("s", $destinataire_email);
         $stmt->execute();
@@ -45,3 +48,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit();
 }
 ?>
+
+
+
