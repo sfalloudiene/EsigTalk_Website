@@ -1,3 +1,29 @@
+<?php
+session_start();
+include('../param.inc.php'); // Connexion à la base de données
+
+// Récupération de l'ID du tuteur connecté
+$user_id = $_SESSION['user_id'];
+
+// Vérifier que l'utilisateur est connecté
+if (!isset($user_id)) {
+    header("Location: connexion.php");
+    exit();
+}
+
+// Requête pour récupérer les apprentis associés au tuteur connecté
+$stmt = $conn->prepare("
+    SELECT u.id AS apprenti_id, u.nom, u.prenom
+    FROM equipe
+    INNER JOIN user u ON equipe.apprenti_id = u.id
+    WHERE equipe.tuteur_ecole_id = ? OR equipe.tuteur_entreprise_id = ?
+");
+$stmt->bind_param("ii", $user_id, $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$apprentis = $result->fetch_all(MYSQLI_ASSOC);
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -22,138 +48,159 @@
                     <a class="nav-link" href="#" onclick="afficherSection('messages-non-lus', this)">Messages Non Lus</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" onclick="afficherSection('equipes', this)">Equipes</a>
+                    <a class="nav-link" href="#" onclick="afficherSection('equipes', this)">Équipes</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#" onclick="afficherSection('nouveau-message', this)">Nouveau Message</a>
                 </li>
             </ul>
             <hr>
-            <a href="deconnexion.php" class="btn btn-danger mt-3">Déconnexion</a>
+            <a href="../connexion.php" class="btn btn-danger mt-3">Déconnexion</a>
         </nav>
 
         <!-- Contenu Principal -->
         <div class="content p-4">
-            <h1>Bienvenue, [Nom du Tuteur]</h1>
+            <h1>Bienvenue, Tuteur</h1>
 
             <!-- Section des Messages Reçus -->
             <section id="messages-recus">
                 <h2>Vos Messages Reçus</h2>
-                <div class="message non-lu">
-                    <h3>Titre du message (Non lu)</h3>
-                    <p><strong>Expéditeur:</strong> Apprenti</p>
-                    <p><strong>Date:</strong> 01/11/2024</p>
-                    <p><strong>Catégorie:</strong> Suivi</p>
-                    <p>Contenu du message: Voici un message qui n'a pas encore été lu.</p>
-                    <p><strong>Pièce jointe:</strong> <a href="document.pdf" target="_blank">document.pdf</a></p>
-                    <div class="message-actions">
-                        <a href="repondre.php?message_id=1" class="btn btn-primary btn-sm">Répondre</a>
-                        <a href="supprimer.php?message_id=1" class="btn btn-danger btn-sm">Supprimer</a>
-                    </div>
-                </div>
+                <?php
+                $stmt = $conn->prepare("
+                    SELECT messages.*, user.email AS expediteur_email
+                    FROM messages
+                    INNER JOIN user ON messages.expediteur_id = user.id
+                    WHERE messages.destinataire_id = ?
+                    ORDER BY messages.date_envoi DESC
+                ");
+                $stmt->bind_param("i", $user_id);
+                $stmt->execute();
+                $result = $stmt->get_result();
+
+                if ($result->num_rows > 0) {
+                    while ($message = $result->fetch_assoc()) {
+                        $message_class = $message['lu'] ? "" : "non-lu";
+                        echo "<a href='voir_message.php?id=" . $message['id'] . "' class='message-link'>";
+                        echo "<div class='message $message_class'>";
+                        echo "<h3>" . htmlspecialchars($message['sujet']) . "</h3>";
+                        echo "<p><strong>Expéditeur:</strong> " . htmlspecialchars($message['expediteur_email']) . "</p>";
+                        echo "<p><strong>Date:</strong> " . $message['date_envoi'] . "</p>";
+                        echo "<p><strong>Catégorie:</strong> " . htmlspecialchars($message['categorie']) . "</p>";
+                        echo "<p>" . htmlspecialchars($message['contenu']) . "</p>";
+                        if ($message['piece_jointe']) {
+                            echo "<p><strong>Pièce jointe :</strong> <a href='telecharger.php?file_id=" . $message['id'] . "'>Télécharger</a></p>";
+                        }
+                        echo "</div></a>";
+                    }
+                } else {
+                    echo "<p>Vous n'avez aucun message dans votre boîte de réception.</p>";
+                }
+                ?>
             </section>
 
             <!-- Section des Messages Envoyés -->
             <section id="messages-envoyes" style="display: none;">
                 <h2>Vos Messages Envoyés</h2>
-                <div class="message">
-                    <h3>Titre du message envoyé</h3>
-                    <p><strong>Destinataire:</strong> Apprenti</p>
-                    <p><strong>Date:</strong> 27/10/2024</p>
-                    <p><strong>Catégorie:</strong> Info</p>
-                    <p>Contenu du message: Voici le contenu du message que vous avez envoyé.</p>
-                    <p><strong>Pièce jointe:</strong> <a href="document_envoye.pdf" target="_blank">document_envoye.pdf</a></p>
-                </div>
+                <?php
+                $stmt = $conn->prepare("
+                    SELECT messages.*, user.email AS destinataire_email
+                    FROM messages
+                    INNER JOIN user ON messages.destinataire_id = user.id
+                    WHERE messages.expediteur_id = ?
+                    ORDER BY messages.date_envoi DESC
+                ");
+                $stmt->bind_param("i", $user_id);
+                $stmt->execute();
+                $result = $stmt->get_result();
+
+                if ($result->num_rows > 0) {
+                    while ($message = $result->fetch_assoc()) {
+                        echo "<a href='voir_message.php?id=" . $message['id'] . "' class='message-link'>";
+                        echo "<div class='message'>";
+                        echo "<h3>" . htmlspecialchars($message['sujet']) . "</h3>";
+                        echo "<p><strong>Destinataire:</strong> " . htmlspecialchars($message['destinataire_email']) . "</p>";
+                        echo "<p><strong>Date:</strong> " . $message['date_envoi'] . "</p>";
+                        echo "<p><strong>Catégorie:</strong> " . htmlspecialchars($message['categorie']) . "</p>";
+                        echo "<p>" . htmlspecialchars($message['contenu']) . "</p>";
+                        if ($message['piece_jointe']) {
+                            echo "<p><strong>Pièce jointe :</strong> <a href='telecharger.php?file_id=" . $message['id'] . "'>Télécharger</a></p>";
+                        }
+                        echo "</div></a>";
+                    }
+                } else {
+                    echo "<p>Vous n'avez aucun message envoyé.</p>";
+                }
+                ?>
             </section>
 
             <!-- Section des Messages Non Lus -->
             <section id="messages-non-lus" style="display: none;">
                 <h2>Vos Messages Non Lus</h2>
-                <div class="message non-lu">
-                    <h3>Titre du message non lu</h3>
-                    <p><strong>Expéditeur:</strong> Apprenti</p>
-                    <p><strong>Date:</strong> 29/10/2024</p>
-                    <p><strong>Catégorie:</strong> Info</p>
-                    <p>Contenu du message: Voici un message qui n'a pas encore été lu.</p>
-                </div>
+                <?php
+                $stmt = $conn->prepare("
+                    SELECT messages.*, user.email AS expediteur_email
+                    FROM messages
+                    INNER JOIN user ON messages.expediteur_id = user.id
+                    WHERE messages.destinataire_id = ? AND messages.lu = 0
+                    ORDER BY messages.date_envoi DESC
+                ");
+                $stmt->bind_param("i", $user_id);
+                $stmt->execute();
+                $result = $stmt->get_result();
+
+                if ($result->num_rows > 0) {
+                    while ($message = $result->fetch_assoc()) {
+                        echo "<a href='voir_message.php?id=" . $message['id'] . "' class='message-link'>";
+                        echo "<div class='message non-lu'>";
+                        echo "<h3>" . htmlspecialchars($message['sujet']) . "</h3>";
+                        echo "<p><strong>Expéditeur:</strong> " . htmlspecialchars($message['expediteur_email']) . "</p>";
+                        echo "<p><strong>Date:</strong> " . $message['date_envoi'] . "</p>";
+                        echo "<p><strong>Catégorie:</strong> " . htmlspecialchars($message['categorie']) . "</p>";
+                        echo "<p>" . htmlspecialchars($message['contenu']) . "</p>";
+                        if ($message['piece_jointe']) {
+                            echo "<p><strong>Pièce jointe :</strong> <a href='telecharger.php?file_id=" . $message['id'] . "'>Télécharger</a></p>";
+                        }
+                        echo "</div></a>";
+                    }
+                } else {
+                    echo "<p>Vous n'avez aucun message non lu.</p>";
+                }
+                ?>
             </section>
 
-            <!-- Section Equipes -->
+            <!-- Section Équipes -->
             <section id="equipes" style="display: none;">
-                <h2>Vos Equipes</h2>
-                <ul class="list-group">
-                    <li class="list-group-item">
-                        <a href="#" onclick="afficherDetailsEquipe('equipe1')">Jean Dupont</a>
-                    </li>
-                    <li class="list-group-item">
-                        <a href="#" onclick="afficherDetailsEquipe('equipe2')">Marie Leroy</a>
-                    </li>
+                <h2>Vos Équipes</h2>
+                <ul>
+                    <?php foreach ($apprentis as $apprenti): ?>
+                        <li>
+                            <a href="#" onclick="afficherEquipe(<?php echo $apprenti['apprenti_id']; ?>)">
+                                <?php echo htmlspecialchars($apprenti['prenom'] . ' ' . $apprenti['nom']); ?>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
                 </ul>
-
-                <div id="details-equipe" style="display: none; margin-top: 20px;">
-                    <h3>Détails de l'Equipe</h3>
-                    <p><strong>Apprenti:</strong> <span id="apprenti-nom"></span></p>
-                    <p><strong>Email Apprenti:</strong> <span id="apprenti-email"></span></p>
-                    <p><strong>Tuteur Entreprise:</strong> <span id="tuteur-entreprise-nom"></span></p>
-                    <p><strong>Email Tuteur Entreprise:</strong> <span id="tuteur-entreprise-email"></span></p>
-                    <p><strong>Tuteur Ecole:</strong> <span id="tuteur-ecole-nom"></span></p>
-                    <p><strong>Email Tuteur Ecole:</strong> <span id="tuteur-ecole-email"></span></p>
+                <div id="details-equipe" style="display: none;">
+                    <!-- Informations sur l'équipe sélectionnée, chargées dynamiquement via AJAX -->
                 </div>
             </section>
 
             <!-- Section Nouveau Message -->
             <section id="nouveau-message" style="display: none;">
                 <h2>Nouveau Message</h2>
-                <form method="POST" action="envoyer_message.php" enctype="multipart/form-data">
-                    <!-- Expéditeur -->
-                    <div class="mb-3">
-                        <label for="expediteur" class="form-label">Expéditeur</label>
-                        <input type="email" class="form-control" id="expediteur" name="expediteur" placeholder="Votre email" required>
-                    </div>
-
-                    <!-- Destinataire(s) -->
-                    <div class="mb-3">
-                        <label for="destinataire1" class="form-label">Destinataire</label>
-                        <input type="email" class="form-control" id="destinataire1" name="destinataire1" placeholder="Email du destinataire principal" required>
-                        <label for="destinataire2" class="form-label">Destinataire secondaire (optionnel)</label>
-                        <input type="email" class="form-control" id="destinataire2" name="destinataire2" placeholder="Email du destinataire secondaire">
-                    </div>
-
-                    <!-- Titre -->
-                    <div class="mb-3">
-                        <label for="sujet" class="form-label">Titre</label>
-                        <input type="text" class="form-control" id="sujet" name="sujet" placeholder="Sujet du message" required>
-                    </div>
-
-                    <!-- Catégorie -->
-                    <div class="mb-3">
-                        <label for="categorie" class="form-label">Catégorie</label>
-                        <select id="categorie" name="categorie" class="form-control" required>
-                            <option value="Suivi">Suivi</option>
-                            <option value="Info">Info</option>
-                        </select>
-                    </div>
-
-                    <!-- Texte -->
-                    <div class="mb-3">
-                        <label for="contenu" class="form-label">Message</label>
-                        <textarea class="form-control" id="contenu" name="contenu" rows="5" placeholder="Écrivez votre message ici" required></textarea>
-                    </div>
-
-                    <!-- Document (PDF) -->
-                    <div class="mb-3">
-                        <label for="document" class="form-label">Pièce jointe (PDF uniquement)</label>
-                        <input type="file" class="form-control" id="document" name="document" accept=".pdf">
-                    </div>
-
-                    <!-- Date et heure d’envoi -->
-                    <div class="mb-3">
-                        <label for="date_heure" class="form-label">Date et heure d'envoi</label>
-                        <input type="datetime-local" class="form-control" id="date_heure" name="date_heure" required>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary">Envoyer</button>
-                </form>
+                <p>Sélectionnez une équipe pour envoyer un message :</p>
+                <ul>
+                    <?php foreach ($apprentis as $apprenti): ?>
+                        <li>
+                            <a href="#" onclick="afficherFormulaireMessage(<?php echo $apprenti['apprenti_id']; ?>)">
+                                <?php echo htmlspecialchars($apprenti['prenom'] . ' ' . $apprenti['nom']); ?>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+                <div id="formulaire-message" style="display: none;">
+                    <!-- Formulaire pour envoyer un message, chargé dynamiquement via AJAX -->
+                </div>
             </section>
         </div>
     </div>
@@ -170,39 +217,31 @@
             element.classList.add('active');
         }
 
-        function afficherDetailsEquipe(equipeId) {
-            let apprentiNom, apprentiEmail, tuteurEntrepriseNom, tuteurEntrepriseEmail, tuteurEcoleNom, tuteurEcoleEmail;
+        // Afficher les détails de l'équipe sélectionnée
+        function afficherEquipe(apprentiId) {
+            fetch(`fetch_equipe.php?apprenti_id=${apprentiId}`)
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById("details-equipe").style.display = "block";
+                    document.getElementById("details-equipe").innerHTML = data;
+                });
+        }
 
-            if (equipeId === 'equipe1') {
-                apprentiNom = "Jean Dupont";
-                apprentiEmail = "jean.dupont@exemple.com";
-                tuteurEntrepriseNom = "Pierre Martin";
-                tuteurEntrepriseEmail = "pierre.martin@entreprise.com";
-                tuteurEcoleNom = "Sophie Durant";
-                tuteurEcoleEmail = "sophie.durant@esigelec.fr";
-            } else if (equipeId === 'equipe2') {
-                apprentiNom = "Marie Leroy";
-                apprentiEmail = "marie.leroy@exemple.com";
-                tuteurEntrepriseNom = "Alice Robert";
-                tuteurEntrepriseEmail = "alice.robert@entreprise.com";
-                tuteurEcoleNom = "Michel Blanc";
-                tuteurEcoleEmail = "michel.blanc@esigelec.fr";
-            }
-
-            document.getElementById("apprenti-nom").textContent = apprentiNom;
-            document.getElementById("apprenti-email").textContent = apprentiEmail;
-            document.getElementById("tuteur-entreprise-nom").textContent = tuteurEntrepriseNom;
-            document.getElementById("tuteur-entreprise-email").textContent = tuteurEntrepriseEmail;
-            document.getElementById("tuteur-ecole-nom").textContent = tuteurEcoleNom;
-            document.getElementById("tuteur-ecole-email").textContent = tuteurEcoleEmail;
-
-            document.getElementById("details-equipe").style.display = "block";
+        // Afficher le formulaire de message pour l'équipe sélectionnée
+        function afficherFormulaireMessage(apprentiId) {
+            fetch(`fetch_formulaire_message.php?apprenti_id=${apprentiId}`)
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById("formulaire-message").style.display = "block";
+                    document.getElementById("formulaire-message").innerHTML = data;
+                });
         }
     </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
+
+
 
 
 

@@ -1,5 +1,9 @@
 <?php
-session_start();
+// Démarrer la session seulement si elle n'est pas déjà démarrée
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 include('../param.inc.php'); // Connexion à la base de données
 
 // Vérifier que l'utilisateur est connecté
@@ -8,7 +12,6 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-// Récupérer l'ID du message depuis l'URL
 $message_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 $user_id = $_SESSION['user_id'];
 
@@ -22,9 +25,9 @@ $stmt = $conn->prepare("
     SELECT messages.*, user.email AS expediteur_email
     FROM messages
     INNER JOIN user ON messages.expediteur_id = user.id
-    WHERE messages.id = ? AND messages.destinataire_id = ?
+    WHERE messages.id = ? AND (messages.destinataire_id = ? OR messages.expediteur_id = ?)
 ");
-$stmt->bind_param("ii", $message_id, $user_id);
+$stmt->bind_param("iii", $message_id, $user_id, $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -52,9 +55,11 @@ if ($result->num_rows > 0) {
         <hr>
         <p><?php echo nl2br(htmlspecialchars($message['contenu'])); ?></p>
         <?php if ($message['piece_jointe']): ?>
-            <p><strong>Pièce jointe :</strong> <a href="<?php echo htmlspecialchars($message['piece_jointe']); ?>" target="_blank">Télécharger</a></p>
+            <p><strong>Pièce jointe :</strong> <a href="telecharger.php?file_id=<?php echo $message_id; ?>">Télécharger</a></p>
         <?php endif; ?>
         <a href="tdb_apprenti.php" class="btn btn-primary mt-3">Retour au tableau de bord</a>
     </div>
 </body>
 </html>
+
+
