@@ -2,7 +2,7 @@
 $titre = "Connexion";
 include('header.inc.php');
 session_start();
-  
+
 // Récupérer le message d'erreur, le cas échéant
 $error_message = isset($_SESSION['error_message']) ? $_SESSION['error_message'] : "";
 unset($_SESSION['error_message']); // Supprime l'erreur après affichage
@@ -34,6 +34,12 @@ unset($_SESSION['error_message']); // Supprime l'erreur après affichage
         </div>
         <button type="submit" class="btn btn-primary">Se connecter</button>
     </form>
+
+    <!-- Bouton S'inscrire -->
+    <div style="text-align: center; margin-top: 20px;">
+        <p>Pas encore de compte ?</p>
+        <a href="inscription.php" class="btn btn-outline-secondary">S'inscrire</a>
+    </div>
 </div>
 </body>
 </html>
@@ -41,4 +47,3 @@ unset($_SESSION['error_message']); // Supprime l'erreur après affichage
 <?php
 include('footer.inc.php');
 ?>
-
