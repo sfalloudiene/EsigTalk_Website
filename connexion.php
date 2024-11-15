@@ -1,11 +1,11 @@
 <?php
-  $titre = "Connexion";
-  include('header.inc.php');
-  session_start();
+$titre = "Connexion";
+include('header.inc.php');
+session_start();
   
-  // Vérifier si un message d'erreur a été défini dans la session (après tentative de connexion)
-  $error_message = isset($_SESSION['error_message']) ? $_SESSION['error_message'] : "";
-  unset($_SESSION['error_message']); // Supprime l'erreur de la session après affichage
+// Récupérer le message d'erreur, le cas échéant
+$error_message = isset($_SESSION['error_message']) ? $_SESSION['error_message'] : "";
+unset($_SESSION['error_message']); // Supprime l'erreur après affichage
 ?>
 
 <!DOCTYPE html>
@@ -19,7 +19,6 @@
 <div class="container-centered">
     <h1>Connexion à votre compte</h1>
     <?php
-    // Affichage du message d'erreur s'il y en a un
     if (!empty($error_message)) {
         echo "<p style='color:red;'>$error_message</p>";
     }
@@ -40,5 +39,6 @@
 </html>
 
 <?php
-  include('footer.inc.php');
+include('footer.inc.php');
 ?>
+

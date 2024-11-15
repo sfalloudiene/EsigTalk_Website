@@ -1,0 +1,160 @@
+/* Styles globaux */
+body {
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f1f3f4;
+  color: #202124;
+}
+ 
+/* Header */
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+}
+ 
+.logo {
+  height: 40px;
+}
+ 
+header nav {
+  display: flex;
+  gap: 10px;
+}
+ 
+header nav .btn {
+  margin: 0 10px;
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+}
+ 
+.btn-primary {
+  background-color: #1a73e8;
+  color: white;
+}
+ 
+/* Section Hero */
+.hero {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background-color: #fff;
+}
+ 
+.hero-content {
+  display: flex;
+  flex-direction: row;
+  max-width: 1200px;
+  width: 100%;
+  align-items: center;
+  gap: 0px;
+}
+ 
+.hero-text {
+  flex: 1.5;
+}
+ 
+.hero-text h1 {
+  font-size: 3em;
+  color: #1a73e8;
+  margin-bottom: 10px;
+}
+ 
+.hero-text p {
+  font-size: 2em;
+  color: #5f6368;
+  margin-bottom: 30px;
+}
+ 
+.hero-image {
+  flex: 1;
+  max-width: 100%;
+  height: auto;
+}
+ 
+.action-buttons {
+  display: flex;
+  gap: 15px;
+}
+ 
+.action-buttons .btn-large {
+  padding: 15px 30px;
+  font-size: 1.2em;
+}
+ 
+/* Section Features */
+.features {
+  display: flex;
+  justify-content: space-around;
+  padding: 50px 20px;
+  background-color: white;
+}
+ 
+.feature {
+  text-align: center;
+  max-width: 250px;
+}
+ 
+/* Footer */
+footer {
+  text-align: center;
+  padding: 20px;
+  font-size: 0.9em;
+  background-color: #445be1;
+  color: #f1f3f4;
+}
+ 
+footer nav a {
+  color: #f1f3f4;
+  margin: 0 5px;
+}
+ 
+/* --- Responsive styles for mobile devices --- */
+ 
+@media (max-width: 768px) {
+  /* Header */
+  .container {
+      flex-direction: column;
+      text-align: center;
+  }
+ 
+  header nav {
+      flex-direction: column;
+      gap: 5px;
+  }
+ 
+  /* Section Hero */
+  .hero-content {
+      flex-direction: column;
+      text-align: center;
+  }
+ 
+  .hero-text h1 {
+      font-size: 2em;
+  }
+ 
+  .hero-text p {
+      font-size: 1.2em;
+  }
+ 
+  .hero-image {
+      width: 80%;
+      max-width: 300px;
+      margin-top: 20px;
+  }
+ 
+  .action-buttons {
+      flex-direction: column;
+      gap: 10px;
+  }
+ 
+  /* Section Features */
+  .features {
+      flex-direction: column;
+      gap: 20px;
+  }
+}

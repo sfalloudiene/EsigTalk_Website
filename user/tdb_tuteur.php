@@ -2,14 +2,18 @@
 session_start();
 include('../param.inc.php'); // Connexion à la base de données
 
-// Récupération de l'ID du tuteur connecté
-$user_id = $_SESSION['user_id'];
-
 // Vérifier que l'utilisateur est connecté
-if (!isset($user_id)) {
+if (!isset($_SESSION['user_id'])) {
     header("Location: connexion.php");
     exit();
 }
+
+// Récupération des informations de l'utilisateur depuis la session
+$prenom = isset($_SESSION['prenom']) ? $_SESSION['prenom'] : "Tuteur";
+$nom = isset($_SESSION['nom']) ? $_SESSION['nom'] : "";
+
+// Récupération de l'ID de l'utilisateur connecté
+$user_id = $_SESSION['user_id'];
 
 // Requête pour récupérer les apprentis associés au tuteur connecté
 $stmt = $conn->prepare("
@@ -60,7 +64,7 @@ $apprentis = $result->fetch_all(MYSQLI_ASSOC);
 
         <!-- Contenu Principal -->
         <div class="content p-4">
-            <h1>Bienvenue, Tuteur</h1>
+            <h1>Bienvenue, <?php echo htmlspecialchars($prenom . " " . $nom); ?></h1>
 
             <!-- Section des Messages Reçus -->
             <section id="messages-recus">
@@ -87,7 +91,7 @@ $apprentis = $result->fetch_all(MYSQLI_ASSOC);
                         echo "<p><strong>Date:</strong> " . $message['date_envoi'] . "</p>";
                         echo "<p><strong>Catégorie:</strong> " . htmlspecialchars($message['categorie']) . "</p>";
                         echo "<p>" . htmlspecialchars($message['contenu']) . "</p>";
-                        if ($message['piece_jointe']) {
+                        if ($message['piece_jointe_blob']) {
                             echo "<p><strong>Pièce jointe :</strong> <a href='telecharger.php?file_id=" . $message['id'] . "'>Télécharger</a></p>";
                         }
                         echo "</div></a>";
@@ -122,7 +126,7 @@ $apprentis = $result->fetch_all(MYSQLI_ASSOC);
                         echo "<p><strong>Date:</strong> " . $message['date_envoi'] . "</p>";
                         echo "<p><strong>Catégorie:</strong> " . htmlspecialchars($message['categorie']) . "</p>";
                         echo "<p>" . htmlspecialchars($message['contenu']) . "</p>";
-                        if ($message['piece_jointe']) {
+                        if ($message['piece_jointe_blob']) {
                             echo "<p><strong>Pièce jointe :</strong> <a href='telecharger.php?file_id=" . $message['id'] . "'>Télécharger</a></p>";
                         }
                         echo "</div></a>";
@@ -157,7 +161,7 @@ $apprentis = $result->fetch_all(MYSQLI_ASSOC);
                         echo "<p><strong>Date:</strong> " . $message['date_envoi'] . "</p>";
                         echo "<p><strong>Catégorie:</strong> " . htmlspecialchars($message['categorie']) . "</p>";
                         echo "<p>" . htmlspecialchars($message['contenu']) . "</p>";
-                        if ($message['piece_jointe']) {
+                        if ($message['piece_jointe_blob']) {
                             echo "<p><strong>Pièce jointe :</strong> <a href='telecharger.php?file_id=" . $message['id'] . "'>Télécharger</a></p>";
                         }
                         echo "</div></a>";
@@ -239,9 +243,5 @@ $apprentis = $result->fetch_all(MYSQLI_ASSOC);
     </script>
 </body>
 </html>
-
-
-
-
 
 

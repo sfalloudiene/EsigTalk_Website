@@ -7,7 +7,7 @@ session_start();
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Accueil - ESIGELEC</title>
-  <link rel="stylesheet" href="homePage1.css">
+  <link rel="stylesheet" href="index.css">
 </head>
 <body>
   <header>
@@ -52,8 +52,8 @@ session_start();
   <footer>
     <p>&copy; 2024 ESIGELEC. Tous droits réservés.</p>
     <nav>
-      <a href="admin1.php">Mentions légales</a> | 
-      <a href="./user/user.php">Politique de confidentialité</a> |
+      <a href="#">Mentions légales</a> |
+      <a href="#">Politique de confidentialité</a> |
       <a href="#">Contact</a>
     </nav>
   </footer>
