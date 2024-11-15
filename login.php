@@ -20,10 +20,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($result->num_rows > 0) {
         $user = $result->fetch_assoc();
 
-        // Vérification
+        // Vérification du mot de passe
         if (password_verify($password, $user['password'])) {
-            // Vérification du rôle de l'utilisateur
+            // Stocker les informations de l'utilisateur dans la session
             $_SESSION['user_id'] = $user['id'];
+            $_SESSION['prenom'] = $user['prenom'];
+            $_SESSION['nom'] = $user['nom'];
             $_SESSION['role'] = $user['role'];
 
             // Redirection en fonction du rôle
@@ -32,14 +34,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['error_message'] = "Votre compte n'est pas encore activé. Veuillez contacter un administrateur.";
                     header("Location: connexion.php");
                     break;
-                case 1:
+                case 1: // Apprenti
                     header("Location: user/tdb_apprenti.php");
                     exit();
-                case 2:
-                case 3:
+                case 2: // Tuteur entreprise
+                case 3: // Tuteur école
                     header("Location: user/tdb_tuteur.php");
                     exit();
-                case 4:
+                case 4: // Administrateur
                     header("Location: admin1.php");
                     exit();
                 default:
@@ -57,3 +59,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
+

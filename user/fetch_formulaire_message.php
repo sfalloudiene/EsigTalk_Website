@@ -1,6 +1,6 @@
 <?php
 session_start();
-include('../param.inc.php');
+include('../param.inc.php'); // Connexion à la base de données
 
 // Récupération de l'ID du tuteur connecté
 $expediteur_id = $_SESSION['user_id'];
@@ -14,22 +14,20 @@ if (!isset($expediteur_id)) {
 // Récupérer l'ID de l'apprenti sélectionné depuis l'URL
 $apprenti_id = (int)$_GET['apprenti_id'];
 
-// Requête pour récupérer les e-mails de l'apprenti et du second tuteur
+// Requête pour récupérer les e-mails de l'apprenti et de l'autre tuteur dans l'équipe
 $stmt = $conn->prepare("
     SELECT u.email AS apprenti_email, 
            CASE 
                WHEN equipe.tuteur_ecole_id = ? THEN t2.email 
                WHEN equipe.tuteur_entreprise_id = ? THEN t1.email 
-           END AS second_tuteur_email,
-           tuteur.email AS expediteur_email
+           END AS second_tuteur_email
     FROM equipe
     JOIN user u ON equipe.apprenti_id = u.id
     JOIN user t1 ON equipe.tuteur_ecole_id = t1.id
     JOIN user t2 ON equipe.tuteur_entreprise_id = t2.id
-    JOIN user tuteur ON tuteur.id = ?
     WHERE equipe.apprenti_id = ?
 ");
-$stmt->bind_param("iiii", $expediteur_id, $expediteur_id, $expediteur_id, $apprenti_id);
+$stmt->bind_param("iii", $expediteur_id, $expediteur_id, $apprenti_id);
 $stmt->execute();
 $result = $stmt->get_result();
 $equipe = $result->fetch_assoc();
@@ -42,12 +40,6 @@ if (!$equipe) {
 ?>
 
 <form method="POST" action="envoyer_message.php" enctype="multipart/form-data">
-    <!-- Expéditeur automatiquement rempli en fonction de l'utilisateur connecté -->
-    <div class="mb-3">
-        <label for="expediteur" class="form-label">Expéditeur</label>
-        <input type="email" class="form-control" id="expediteur" name="expediteur" value="<?php echo htmlspecialchars($equipe['expediteur_email']); ?>" readonly>
-    </div>
-
     <!-- Destinataires : apprenti et second tuteur uniquement -->
     <div class="mb-3">
         <label for="destinataires" class="form-label">Destinataires</label>
@@ -55,9 +47,11 @@ if (!$equipe) {
             <option value="<?php echo htmlspecialchars($equipe['apprenti_email']); ?>">
                 Apprenti : <?php echo htmlspecialchars($equipe['apprenti_email']); ?>
             </option>
-            <option value="<?php echo htmlspecialchars($equipe['second_tuteur_email']); ?>">
-                Second Tuteur : <?php echo htmlspecialchars($equipe['second_tuteur_email']); ?>
-            </option>
+            <?php if (!empty($equipe['second_tuteur_email'])): ?>
+                <option value="<?php echo htmlspecialchars($equipe['second_tuteur_email']); ?>">
+                    Second Tuteur : <?php echo htmlspecialchars($equipe['second_tuteur_email']); ?>
+                </option>
+            <?php endif; ?>
         </select>
         <small>Vous pouvez sélectionner un ou plusieurs destinataires (maintenez Ctrl/Cmd pour en choisir plusieurs).</small>
     </div>
@@ -92,5 +86,9 @@ if (!$equipe) {
     <!-- Bouton de soumission -->
     <button type="submit" class="btn btn-primary">Envoyer</button>
 </form>
+
+
+
+
 
 

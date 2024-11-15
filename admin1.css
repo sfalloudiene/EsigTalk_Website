@@ -1,79 +1,82 @@
-/* Styles de base */
 body {
     font-family: Arial, sans-serif;
+    background-color: #f4f6f9;
     margin: 0;
     padding: 0;
-    color: #333;
-    background-color: #f9f9f9;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 }
 
-/* Centrage du titre principal */
-h1 {
-    color: white;
-    background-color: #445be1;
-    padding: 20px;
-    margin: 0;
-    width: 100%;
-    text-align: center;
-    font-size: 2em;
-}
-
-/* Section principale */
-section, .container {
+.container-centered {
+    width: 80%;
+    margin: 30px auto;
     background-color: #ffffff;
     padding: 20px;
-    margin: 20px 0;
-    border: 1px solid #ddd;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    width: 80%;
 }
 
-section h2, .container h2 {
+h1 {
+    text-align: center;
     color: #445be1;
-    margin-top: 0;
-    font-size: 1.5em;
-    border-bottom: 2px solid #445be1;
-    padding-bottom: 10px;
-    text-align: left;
+    font-size: 2em;
+    margin-bottom: 20px;
 }
 
-/* Formulaires */
+h2 {
+    color: #445be1;
+    margin-top: 30px;
+    border-bottom: 2px solid #445be1;
+    padding-bottom: 5px;
+}
+
 form {
-    margin-top: 15px;
+    margin-top: 20px;
 }
 
 label {
-    display: block;
     font-weight: bold;
     color: #445be1;
-    margin-top: 10px;
 }
 
-select, button {
+select {
     width: 100%;
     padding: 10px;
-    margin-top: 5px;
+    margin-top: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
-    font-size: 1em;
+    background-color: #ffffff;
 }
 
-/* Boutons */
-button {
+select:focus {
+    border-color: #445be1;
+    box-shadow: 0 0 5px rgba(68, 91, 225, 0.2);
+}
+
+.btn {
+    font-size: 0.9em;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-outline-primary {
+    color: #445be1;
+    border: 1px solid #445be1;
+}
+
+.btn-outline-primary:hover {
     background-color: #445be1;
     color: white;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-    margin-top: 15px;
 }
 
-button:hover {
-    background-color: #3b4ccd;
+.btn-outline-danger {
+    color: #dc3545;
+    border: 1px solid #dc3545;
+}
+
+.btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: white;
 }
 
 .message {
@@ -81,3 +84,5 @@ button:hover {
     font-weight: bold;
     margin-top: 10px;
 }
+
+

@@ -97,7 +97,7 @@ $user = $result->fetch_assoc();
                         echo "<p><strong>Date:</strong> " . $message['date_envoi'] . "</p>";
                         echo "<p><strong>Catégorie:</strong> " . htmlspecialchars($message['categorie']) . "</p>";
                         echo "<p>" . htmlspecialchars($message['contenu']) . "</p>";
-                        if ($message['piece_jointe']) {
+                        if ($message['piece_jointe_blob']) {
                             echo "<p><strong>Pièce jointe :</strong> <a href='telecharger.php?file_id=" . $message['id'] . "'>Télécharger</a></p>";
                         }
                         echo "</div></a>";
@@ -132,7 +132,7 @@ $user = $result->fetch_assoc();
                         echo "<p><strong>Date:</strong> " . $message['date_envoi'] . "</p>";
                         echo "<p><strong>Catégorie:</strong> " . htmlspecialchars($message['categorie']) . "</p>";
                         echo "<p>" . htmlspecialchars($message['contenu']) . "</p>";
-                        if ($message['piece_jointe']) {
+                        if ($message['piece_jointe_blob']) {
                             echo "<p><strong>Pièce jointe :</strong> <a href='telecharger.php?file_id=" . $message['id'] . "'>Télécharger</a></p>";
                         }
                         echo "</div></a>";
@@ -167,7 +167,7 @@ $user = $result->fetch_assoc();
                         echo "<p><strong>Date:</strong> " . $message['date_envoi'] . "</p>";
                         echo "<p><strong>Catégorie:</strong> " . htmlspecialchars($message['categorie']) . "</p>";
                         echo "<p>" . htmlspecialchars($message['contenu']) . "</p>";
-                        if ($message['piece_jointe']) {
+                        if ($message['piece_jointe_blob']) {
                             echo "<p><strong>Pièce jointe :</strong> <a href='telecharger.php?file_id=" . $message['id'] . "'>Télécharger</a></p>";
                         }
                         echo "</div></a>";
