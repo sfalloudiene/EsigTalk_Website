@@ -13,7 +13,6 @@ $result = $mysqli->query("SELECT id, nom, prenom, email, role FROM user");
 if (!$result) {
     die("Erreur lors de la récupération des utilisateurs : " . $mysqli->error);
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -27,6 +26,11 @@ if (!$result) {
 
 <div class="container-centered">
     <h1>Administration : Gestion des Rôles et Équipes</h1>
+
+    <!-- Bouton de déconnexion -->
+    <form action="deconnexion.php" method="POST" style="text-align: right; margin-bottom: 20px;">
+        <button type="submit" class="btn btn-outline-danger">Déconnexion</button>
+    </form>
 
     <!-- Section : Attribuer un rôle -->
     <hr>
@@ -147,9 +151,7 @@ if (!$result) {
             </div>
         </div>
     </form>
-
 </div>
-
 </body>
 </html>
 
